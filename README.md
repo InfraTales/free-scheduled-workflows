@@ -6,6 +6,10 @@ The point is the budget. Standard workflows get 4,000 free state transitions a m
 
 It's written in AWS CDK (TypeScript). The tests run the real handler against DynamoDB Local and the synthesized state machine on Step Functions Local.
 
+## Architecture
+
+![Scheduler starts a Step Functions workflow that runs one Lambda function and saves a report](docs/architecture.png)
+
 ## How it fits together
 
 1. **EventBridge Scheduler** fires `cron(30 3 * * ? *)` in `America/New_York`, with a 15-minute flexible window. If Step Functions refuses the start, Scheduler retries 3 times for up to 2 hours, then writes the event to an Amazon SQS dead-letter queue (DLQ).
