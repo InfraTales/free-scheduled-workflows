@@ -25,9 +25,9 @@ Every state a run enters is one transition. Every retry is one more. The pricing
 | Summarize needed a second round | + Summarize, MorePages? | 5 |
 | One Lambda retry | + 1 | 4 |
 | Same day run twice | + AlreadyReported | 4 |
-| Worst case: 5 rounds, 2 retries in each, then a failure | 5 x 3 Summarize, 4 MorePages?, JobFailed | 20 |
+| Worst case: 5 rounds, 2 retries in each, then a sixth try that fails | 6 x 3 Summarize, 5 MorePages?, JobFailed | 24 |
 
-At 3 a night, 4,000 free transitions cover 1,333 runs a month. Even the worst case, every night, is 620.
+At 3 a night, 4,000 free transitions cover 1,333 runs a month. Even the worst case, every night, is 744.
 
 ## When splitting work into states stops being free
 
