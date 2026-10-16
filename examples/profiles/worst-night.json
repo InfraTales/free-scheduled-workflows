@@ -1,0 +1,1 @@
+{ "choices": { "MorePages?": ["Summarize", "Summarize", "Summarize", "Summarize"] }, "retries": { "Summarize": 2 }, "errors": { "Summarize": { "error": "TooManyRounds", "onVisit": 5 } } }

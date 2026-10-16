@@ -1,0 +1,32 @@
+{
+  "StateMachines": {
+    "NightlyDigest": {
+      "TestCases": {
+        "OneRound": { "Summarize": "OneRound" },
+        "TwoRounds": { "Summarize": "TwoRounds" },
+        "ThrottledOnce": { "Summarize": "ThrottledOnce" },
+        "LambdaDown": { "Summarize": "LambdaDown" },
+        "TooManyRounds": { "Summarize": "TooManyRounds" }
+      }
+    }
+  },
+  "MockedResponses": {
+    "OneRound": {
+      "0": { "Return": { "day": "2026-10-14", "totals": { "orders": 3, "amountCents": 500, "byStatus": { "PAID": 2, "REFUNDED": 1 }, "pages": 1 }, "cursor": null, "round": 1 } }
+    },
+    "TwoRounds": {
+      "0": { "Return": { "day": "2026-10-13", "totals": { "orders": 500, "amountCents": 1000, "byStatus": { "PAID": 500 }, "pages": 1 }, "cursor": "eyJwayI6IkRBWSMyMDI2LTEwLTEzIiwic2siOiJPUkRFUiM1MDAifQ", "round": 1 } },
+      "1": { "Return": { "day": "2026-10-13", "totals": { "orders": 501, "amountCents": 1002, "byStatus": { "PAID": 501 }, "pages": 2 }, "cursor": null, "round": 2 } }
+    },
+    "ThrottledOnce": {
+      "0": { "Throw": { "Error": "Lambda.TooManyRequestsException", "Cause": "Rate exceeded" } },
+      "1": { "Return": { "day": "2026-10-12", "totals": { "orders": 1, "amountCents": 100, "byStatus": { "PAID": 1 }, "pages": 1 }, "cursor": null, "round": 1 } }
+    },
+    "LambdaDown": {
+      "0-2": { "Throw": { "Error": "Lambda.ServiceException", "Cause": "Service unavailable" } }
+    },
+    "TooManyRounds": {
+      "0": { "Throw": { "Error": "TooManyRounds", "Cause": "still not finished after 5 rounds" } }
+    }
+  }
+}

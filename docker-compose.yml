@@ -1,0 +1,25 @@
+name: free-scheduled-workflows
+# Local engines for `npm run test:local`.
+# DynamoDB Local on host port 8015. Step Functions Local on host port 18015, which
+# calls DynamoDB Local over the compose network and mocks the Lambda function.
+services:
+  dynamodb:
+    image: amazon/dynamodb-local:3.3.2
+    command: ['-jar', 'DynamoDBLocal.jar', '-inMemory', '-sharedDb']
+    ports:
+      - '8015:8000'
+  stepfunctions:
+    image: amazon/aws-stepfunctions-local:2.0.0
+    depends_on: [dynamodb]
+    ports:
+      - '18015:8083'
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCOUNT_ID: '123456789012'
+      # Placeholder credentials: both engines accept any value.
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      DYNAMODB_ENDPOINT: http://dynamodb:8000
+      SFN_MOCK_CONFIG: /home/StepFunctionsLocal/MockConfigFile.json
+    volumes:
+      - ./test/local/MockConfigFile.json:/home/StepFunctionsLocal/MockConfigFile.json:ro

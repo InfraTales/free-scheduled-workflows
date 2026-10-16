@@ -1,0 +1,51 @@
+{
+  "name": "free-scheduled-workflows",
+  "version": "1.0.0",
+  "description": "A nightly job on EventBridge Scheduler and Step Functions Standard, built to stay inside the always-free tier. AWS CDK, TypeScript.",
+  "private": true,
+  "license": "MIT-0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "bundle": "ts-node scripts/bundle.ts",
+    "test": "npm run bundle && jest",
+    "local:up": "docker compose up -d --wait",
+    "local:down": "docker compose down",
+    "test:local": "npm run bundle && jest -c jest.local.config.js",
+    "synth": "cdk synth --quiet",
+    "check": "npm run build && npm run lint && npm test && npm run synth",
+    "definition": "ts-node scripts/export-definition.ts",
+    "count": "ts-node scripts/count-transitions.ts",
+    "deploy": "npm run bundle && cdk deploy",
+    "destroy": "cdk destroy",
+    "smoke": "ts-node scripts/smoke-test.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1152.0",
+    "@aws-sdk/lib-dynamodb": "^3.1152.0",
+    "aws-cdk-lib": "^2.273.0",
+    "cdk-nag": "^3.0.2",
+    "constructs": "^10.8.1"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.1152.0",
+    "@aws-sdk/client-scheduler": "^3.1152.0",
+    "@aws-sdk/client-sfn": "^3.1152.0",
+    "@eslint/js": "^10.0.1",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.19.2",
+    "aws-cdk": "^2.1145.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.12.0",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.15",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}

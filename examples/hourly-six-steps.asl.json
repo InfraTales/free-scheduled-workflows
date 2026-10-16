@@ -1,0 +1,12 @@
+{
+  "Comment": "An hourly job split into six small Lambda steps. Fine at night, too many transitions every hour.",
+  "StartAt": "Fetch",
+  "States": {
+    "Fetch": { "Type": "Task", "Resource": "arn:aws:lambda:us-east-1:123456789012:function:fetch", "Next": "Validate" },
+    "Validate": { "Type": "Task", "Resource": "arn:aws:lambda:us-east-1:123456789012:function:validate", "Next": "Transform" },
+    "Transform": { "Type": "Task", "Resource": "arn:aws:lambda:us-east-1:123456789012:function:transform", "Next": "Enrich" },
+    "Enrich": { "Type": "Task", "Resource": "arn:aws:lambda:us-east-1:123456789012:function:enrich", "Next": "Store" },
+    "Store": { "Type": "Task", "Resource": "arn:aws:lambda:us-east-1:123456789012:function:store", "Next": "Notify" },
+    "Notify": { "Type": "Task", "Resource": "arn:aws:lambda:us-east-1:123456789012:function:notify", "End": true }
+  }
+}

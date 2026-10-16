@@ -1,0 +1,40 @@
+{
+  "Comment": "The same nightly report, written the obvious way: one Map iteration per order. Don't ship this one.",
+  "StartAt": "ListOrders",
+  "States": {
+    "ListOrders": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:list-orders",
+      "Next": "ForEachOrder"
+    },
+    "ForEachOrder": {
+      "Type": "Map",
+      "ItemsPath": "$.orders",
+      "ItemProcessor": {
+        "ProcessorConfig": { "Mode": "INLINE" },
+        "StartAt": "LoadOrder",
+        "States": {
+          "LoadOrder": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::dynamodb:getItem",
+            "Parameters": { "TableName": "orders", "Key": { "pk": { "S.$": "$.pk" }, "sk": { "S.$": "$.sk" } } },
+            "Next": "IsRefund?"
+          },
+          "IsRefund?": {
+            "Type": "Choice",
+            "Choices": [{ "Variable": "$.Item.status.S", "StringEquals": "REFUNDED", "Next": "CountRefund" }],
+            "Default": "CountSale"
+          },
+          "CountRefund": { "Type": "Pass", "End": true },
+          "CountSale": { "Type": "Pass", "End": true }
+        }
+      },
+      "Next": "SaveReport"
+    },
+    "SaveReport": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:save-report",
+      "End": true
+    }
+  }
+}
