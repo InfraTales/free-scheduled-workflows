@@ -140,17 +140,18 @@ describe('the transition budget', () => {
     expect(night.transitions * 31).toBeLessThanOrEqual(FREE_TRANSITIONS);
   });
 
-  test('even the worst night (5 rounds, every retry used, then a failure) fits 31 times in the free tier', () => {
-    // MAX_ROUNDS is 5. Each round can use 2 retries. Round 5 fails.
+  test('even the worst night (5 rounds, every retry used, then a failing sixth try) fits 31 times in the free tier', () => {
+    // MAX_ROUNDS is 5: the handler throws when round > 5, so rounds 1-5 finish and visit 6 fails.
+    // Every visit, the failing one included, can use 2 transient-error retries.
     const worst = countTransitions(def, {
       defaultMapItems: 300,
-      choices: { 'MorePages?': ['Summarize', 'Summarize', 'Summarize', 'Summarize'] },
+      choices: { 'MorePages?': ['Summarize', 'Summarize', 'Summarize', 'Summarize', 'Summarize'] },
       retries: { Summarize: 2 },
-      errors: { Summarize: { error: 'TooManyRounds', onVisit: 5 } },
+      errors: { Summarize: { error: 'TooManyRounds', onVisit: 6 } },
     });
     expect(worst.outcome).toBe('failed');
-    // 5 x (1 + 2 retries) + 4 MorePages? + JobFailed = 20
-    expect(worst.transitions).toBe(20);
+    // 6 x (1 + 2 retries) + 5 MorePages? + JobFailed = 24
+    expect(worst.transitions).toBe(24);
     expect(worst.transitions * 31).toBeLessThanOrEqual(FREE_TRANSITIONS);
   });
 
